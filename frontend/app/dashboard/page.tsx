@@ -38,6 +38,9 @@ export default function CitizenDashboardPage() {
     page: number;
     limit: number;
     totalIssues: number;
+    totalUserIssues: number;
+    totalInProgressIssues: number,
+    totalResolvedIssues: number;
     totalPages: number;
   } | null>(null);
 
@@ -107,10 +110,9 @@ export default function CitizenDashboardPage() {
 
 
   // Calculate citizen's summary metrics from current list
-  const totalReports = pagination?.totalIssues ?? 0;
-  const inProgressReports = issues.filter((i) => i.status === 'IN_PROGRESS' || i.status === 'ASSIGNED').length;
-  const resolvedReports = issues.filter((i) => i.status === 'RESOLVED').length;
-
+  const totalReports = pagination?.totalUserIssues ?? 0;
+  const inProgressReports = pagination?.totalInProgressIssues ?? 0;
+  const resolvedReports = pagination?.totalResolvedIssues ?? 0;
   return (
     <div className="min-h-screen flex flex-col bg-[#f7f6f0] text-[#153b35]">
       <Navbar />
