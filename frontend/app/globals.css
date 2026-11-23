@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --color-forest: #153b35;
+  --color-forest-dark: #0f2a26;
+  --color-forest-hover: #1c4d45;
+  --color-forest-subtle: #eaf3ef;
+
+  --color-sage: #dcece5;
+  --color-sage-light: #f0f7f4;
+  --color-sage-dark: #b8d9cb;
+
+  --color-offwhite: #f7f6f0;
+  --color-offwhite-surface: #ffffff;
+
+  --color-amber-muted: #e7a84b;
+  --color-amber-light: #fdf6ec;
+  --color-amber-dark: #b97d26;
+}
+
+@layer base {
+  :root {
+    --background: #f7f6f0;
+    --foreground: #153b35;
+    --card: #ffffff;
+    --card-foreground: #153b35;
+    --primary: #153b35;
+    --primary-foreground: #ffffff;
+    --muted: #dcece5;
+    --muted-foreground: #4a5d56;
+    --border: #e2e8e4;
+    --ring: #153b35;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Civic Card and Panel styling */
+.civic-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8e4;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(21, 59, 53, 0.04);
+}
+
+.civic-card-elevated {
+  background-color: #ffffff;
+  border: 1px solid #e2e8e4;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px 0 rgba(21, 59, 53, 0.05);
+}
+
+/* Focus styles for accessible navigation */
+.focus-ring {
+  outline: none;
+  transition: all 0.15s ease-in-out;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid #153b35;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(220, 236, 229, 0.6);
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd8d2;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ab4a8;
+}
+

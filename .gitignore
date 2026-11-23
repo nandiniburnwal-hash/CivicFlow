@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# Build files
+backend/dist/
+backend/build/
+frontend/build/
+
+# Logs
+*.log
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE and OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+**/.git_backup/

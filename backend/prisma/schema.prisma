@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Issue {
+  id           String      @id @default(uuid())
+  title        String
+  description  String
+  category     String
+  location     String
+  status       IssueStatus @default(REPORTED)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  userId       String?
+  assignedToId String?
+  assignedTo   User?       @relation("IssueAssignee", fields: [assignedToId], references: [id])
+  user         User?       @relation(fields: [userId], references: [id])
+}
+
+model playing_with_neon {
+  id    Int    @id @default(autoincrement())
+  name  String
+  value Float? @db.Real
+}
+
+model User {
+  id             String   @id @default(uuid())
+  name           String
+  email          String   @unique
+  password       String
+  role           UserRole @default(CITIZEN)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  assignedIssues Issue[]  @relation("IssueAssignee")
+  issues         Issue[]
+}
+
+enum IssueStatus {
+  REPORTED
+  ASSIGNED
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum UserRole {
+  CITIZEN
+  ADMIN
+  OFFICER
+}
