@@ -42,6 +42,10 @@ export default function OfficerDashboardPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalIssues, setTotalIssues] = useState(0);
+    const [totalAssignedIssues, setTotalAssignedIssues] = useState(0);
+    const [totalInProgressIssues, setTotalInProgressIssues] = useState(0);
+    const [totalResolvedIssues, setTotalResolvedIssues] = useState(0);
+    const [totalUserIssues, setTotalUserIssues] = useState(0);
 
     const ITEMS_PER_PAGE = 5;
 
@@ -67,17 +71,17 @@ export default function OfficerDashboardPage() {
                     return;
                 }
 
-                const params=new URLSearchParams({
+                const params = new URLSearchParams({
                     page: String(currentPage),
-                    limit:String(ITEMS_PER_PAGE),
+                    limit: String(ITEMS_PER_PAGE),
                 })
 
-                if(searchQuery.trim()){
-                    params.set('search',searchQuery.trim());
+                if (searchQuery.trim()) {
+                    params.set('search', searchQuery.trim());
                 }
 
-                if(statusFilter!='ALL'){
-                    params.set('status',statusFilter);
+                if (statusFilter != 'ALL') {
+                    params.set('status', statusFilter);
                 }
 
                 const response = await fetch(
@@ -98,6 +102,11 @@ export default function OfficerDashboardPage() {
                 setIssues(data.data);
                 setTotalIssues(data.meta.totalIssues);
                 setTotalPages(data.meta.totalPages);
+
+                setTotalUserIssues(data.meta.totalUserIssues);
+                setTotalAssignedIssues(data.meta.totalAssignedIssues);
+                setTotalInProgressIssues(data.meta.totalInProgressIssues);
+                setTotalResolvedIssues(data.meta.totalResolvedIssues);
             } catch (error) {
                 console.error("Error:", error);
                 setIssuesError(
@@ -183,7 +192,7 @@ export default function OfficerDashboardPage() {
     const stats = [
         {
             title: 'Assigned Issues',
-            value: issues.length,
+            value: 	totalUserIssues,
             description: 'Total issues assigned to you',
             icon: ClipboardList,
             color: 'text-[#153b35]',
@@ -191,7 +200,7 @@ export default function OfficerDashboardPage() {
         },
         {
             title: 'Awaiting Action',
-            value: issues.filter((issue) => issue.status === 'ASSIGNED').length,
+            value: totalAssignedIssues,
             description: 'Issues requiring attention',
             icon: AlertCircle,
             color: 'text-amber-700',
@@ -199,7 +208,7 @@ export default function OfficerDashboardPage() {
         },
         {
             title: 'In Progress',
-            value: issues.filter((issue) => issue.status === 'IN_PROGRESS').length,
+            value: totalInProgressIssues,
             description: 'Currently being worked on',
             icon: Clock,
             color: 'text-blue-700',
@@ -207,7 +216,7 @@ export default function OfficerDashboardPage() {
         },
         {
             title: 'Resolved',
-            value: issues.filter((issue) => issue.status === 'RESOLVED').length,
+            value: totalResolvedIssues,
             description: 'Successfully completed',
             icon: CheckCircle2,
             color: 'text-emerald-700',

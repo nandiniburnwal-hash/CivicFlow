@@ -34,6 +34,7 @@ export class IssuesService {
     //To get all issues
     //findMany => Returns all the issues
     //orderBy => Returns the newest issue first
+
     async getAllIssues(
         user: { id: string, role: UserRole },
         page: number = 1,
@@ -41,10 +42,9 @@ export class IssuesService {
         search: string = '',
         status: string = '',
     ) {
-        const skip = (page - 1) * limit; //It tells prisma how many records to skip
+        const skip = (page - 1) * limit;
 
-
-        //Apply role-based filtering
+        // Apply role-based filtering
         let where: Prisma.IssueWhereInput = {};
 
         if (user.role === UserRole.OFFICER) {
@@ -53,14 +53,13 @@ export class IssuesService {
             where = { userId: user.id };
         }
 
+        // Preserve role-based filtering before search and status filters
         const roleWhere: Prisma.IssueWhereInput = { ...where };
 
-        //Apply search filtering
-        //OR means searches across title, desc, location
-        //insensitive => case insensitive
+        // Apply search filtering
         if (search.trim()) {
             where = {
-                ...where, //conserves the role based condition
+                ...where,
                 OR: [
                     { title: { contains: search.trim(), mode: 'insensitive' } },
                     { description: { contains: search.trim(), mode: 'insensitive' } },
@@ -69,8 +68,7 @@ export class IssuesService {
             };
         }
 
-
-        //Apply status filtering
+        // Apply status filtering
         if (status) {
             where = {
                 ...where,
@@ -78,43 +76,64 @@ export class IssuesService {
             };
         }
 
+        // Fetch issues and calculate all counts simultaneously
+        const [
+            issues,
+            totalIssues,
+            totalUserIssues,
+            totalAssignedIssues,
+            totalInProgressIssues,
+            totalResolvedIssues,
+            totalAssignedAndInProgressIssues,
+        ] = await Promise.all([
+            // Fetch current page
+            this.prisma.issue.findMany({
+                where,
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take: limit,
+            }),
 
-        //Fetch issues and total count of issues simultaneously
-        //Promise.all() exceutes both operations concurrently insteadof waiting for one to finish before starting another.
-        const [issues, totalIssues, totalUserIssues, totalInProgressIssues, totalResolvedIssues] =
-            await Promise.all([
-                this.prisma.issue.findMany({
-                    where,
-                    orderBy: { createdAt: 'desc' },
-                    skip,
-                    take: limit,
-                }),
+            // Count issues matching search and status filters
+            this.prisma.issue.count({ where }),
 
-                // Count matching search and status filters (for pagination)
-                this.prisma.issue.count({ where }),
+            // Count all issues belonging to the current role/user
+            this.prisma.issue.count({ where: roleWhere }),
 
-                // Total reports, independent of search/status filters
-                this.prisma.issue.count({ where: roleWhere }),
+            // Count assigned issues
+            this.prisma.issue.count({
+                where: {
+                    ...roleWhere,
+                    status: IssueStatus.ASSIGNED,
+                },
+            }),
 
-                // Assigned + In Progress issues
-                this.prisma.issue.count({
-                    where: {
-                        ...roleWhere,
-                        status: {
-                            in: [IssueStatus.ASSIGNED, IssueStatus.IN_PROGRESS],
-                        },
+            // Count only IN_PROGRESS issues
+            this.prisma.issue.count({
+                where: {
+                    ...roleWhere,
+                    status: IssueStatus.IN_PROGRESS,
+                },
+            }),
+
+            // Count resolved issues
+            this.prisma.issue.count({
+                where: {
+                    ...roleWhere,
+                    status: IssueStatus.RESOLVED,
+                },
+            }),
+
+            // Combined count for Citizen Dashboard
+            this.prisma.issue.count({
+                where: {
+                    ...roleWhere,
+                    status: {
+                        in: [IssueStatus.ASSIGNED, IssueStatus.IN_PROGRESS],
                     },
-                }),
-
-                // Resolved issues
-                this.prisma.issue.count({
-                    where: {
-                        ...roleWhere,
-                        status: IssueStatus.RESOLVED,
-                    },
-                }),
-            ]);
-
+                },
+            }),
+        ]);
 
         return {
             data: issues,
@@ -122,13 +141,16 @@ export class IssuesService {
                 page,
                 limit,
                 totalIssues,
-                totalUserIssues,
-                totalInProgressIssues,
-                totalResolvedIssues,
+                totalUserIssues,  //assigned issues
+                totalAssignedIssues,  //awaiting action
+                totalInProgressIssues,  //in progress issues
+                totalResolvedIssues,   //resolved issues
+                totalAssignedAndInProgressIssues,
                 totalPages: Math.ceil(totalIssues / limit),
             },
         };
     }
+
 
 
     //To get an issue by id
