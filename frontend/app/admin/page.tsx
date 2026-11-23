@@ -33,7 +33,7 @@ export default function AdminDashboardPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalIssues, setTotalIssues] = useState(0);
 
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 10;
 
   const router = useRouter();
 
