@@ -13,6 +13,7 @@ import {
   PlusCircle,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function ReportIssuePage() {
   const [category, setCategory] = useState<string>('Roads & Potholes');
@@ -48,7 +49,7 @@ export default function ReportIssuePage() {
 
 
       //Fetch the response from the api request
-      const response=await fetch('http://localhost:3001/issues',{
+      const response=await fetch(`${API_BASE_URL}/issues`,{
         method:'POST',
         headers:{
           'Content-Type':'application/json',

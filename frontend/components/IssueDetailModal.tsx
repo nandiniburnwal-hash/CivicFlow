@@ -11,6 +11,8 @@ import {
   User,
   Shield,
 } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
+
 
 interface Officer {
   id: string;
@@ -56,7 +58,7 @@ export function IssueDetailModal({
         if (!token) throw new Error('Authentication not found');
 
         const response = await fetch(
-          'http://localhost:3001/users/officers',
+          `${API_BASE_URL}/users/officers`,
           {
             method: 'GET',
             headers: {

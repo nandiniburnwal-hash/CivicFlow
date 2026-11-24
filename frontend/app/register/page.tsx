@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Building2, ArrowRight } from 'lucide-react';
 import { ToastNotification } from '@/components/ToastNotification';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function RegisterPage() {
 
     try {
       //fetch() sends a request to your NestJS backend
-      const response = await fetch("http://localhost:3001/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',  //POST tels backend we're submitting data
         headers: {
           'Content-Type': 'application/json',  //tells NestJS that requesr body is of JSON type

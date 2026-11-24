@@ -22,6 +22,7 @@ import {
     CalendarDays,
     UserRound,
 } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 
 
 export default function OfficerDashboardPage() {
@@ -85,7 +86,7 @@ export default function OfficerDashboardPage() {
                 }
 
                 const response = await fetch(
-                    `http://localhost:3001/issues?${params.toString()}`,
+                    `${API_BASE_URL}/issues?${params.toString()}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -135,7 +136,7 @@ export default function OfficerDashboardPage() {
             }
 
             const response = await fetch(
-                `http://localhost:3001/issues/${issueId}/status`,
+                `${API_BASE_URL}/issues/${issueId}/status`,
                 {
                     method: 'PATCH',
                     headers: {

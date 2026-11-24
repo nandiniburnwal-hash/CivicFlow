@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Building2, ArrowRight } from 'lucide-react';
 import { ToastNotification } from '@/components/ToastNotification';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function LoginPage() {
     try {
 
       //Sends email & password to NestJS backend
-      const response = await fetch('http://localhost:3001/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

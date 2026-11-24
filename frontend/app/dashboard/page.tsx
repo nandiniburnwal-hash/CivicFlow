@@ -20,6 +20,7 @@ import {
   MapPin,
   Calendar,
 } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function CitizenDashboardPage() {
   // Demonstration issues for preview
@@ -74,7 +75,7 @@ export default function CitizenDashboardPage() {
     }
     const fetchIssues = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/issues?${params.toString()}`, {
+        const response = await fetch(`${API_BASE_URL}/issues?${params.toString()}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

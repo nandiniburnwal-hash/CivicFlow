@@ -15,6 +15,7 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function AdminDashboardPage() {
   const [issues, setIssues] = useState<Issue[]>([]);
@@ -78,7 +79,7 @@ export default function AdminDashboardPage() {
 
         // Fetch issues from the NestJS backend
         const response = await fetch(
-          `http://localhost:3001/issues?${params.toString()}`,
+          `${API_BASE_URL}/issues?${params.toString()}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -131,7 +132,7 @@ export default function AdminDashboardPage() {
 
       //Send PATCH request
       const response = await fetch(
-        `http://localhost:3001/issues/${issueId}/status`,
+        `${API_BASE_URL}/issues/${issueId}/status`,
         {
           method: 'PATCH',
           headers: {
@@ -192,7 +193,7 @@ export default function AdminDashboardPage() {
       }
 
       const response = await fetch(
-        `http://localhost:3001/issues/${issueId}/assign`,
+        `${API_BASE_URL}/issues/${issueId}/assign`,
         {
           method: 'PATCH',
           headers: {
